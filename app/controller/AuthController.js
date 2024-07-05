@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 
 // database schema
@@ -28,8 +28,8 @@ const AuthController = {
       const { name, email, password } = req.body;
 
       // hasing password
-      const salt = bcrypt.genSaltSync();
-      const hashedPass = bcrypt.hashSync(password, salt);
+      const salt = await bcrypt.genSalt();
+      const hashedPass = await bcrypt.hash(password, salt);
 
       const user = new User({
         name: name,
@@ -37,10 +37,10 @@ const AuthController = {
         password: hashedPass,
       });
       const savedUser = await user.save();
-      // return res.status(200).send(savedUser);
-      return savedUser;
+      return res.status(200).json(savedUser);
     } catch (err) {
-      return res.status(400).send("Invalid data given.");
+      console.error(err);
+      return res.status(500).send("An error occurred while registering the user.");
     }
   },
   loginUser: async (req, res, next) => {
@@ -56,8 +56,8 @@ const AuthController = {
         return res.status(400).send("[validation error] Invalid Credentials.");
 
       // checking if does not exist
-      const user = (await User.findOne({ email: req.body.email })).toObject();
-      if (!user) return res.status(400).send("User do not exist!");
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) return res.status(400).send("User does not exist!");
 
       // checking if password is valid
       const validPass = await bcrypt.compare(req.body.password, user.password);
@@ -72,7 +72,8 @@ const AuthController = {
         .status(200)
         .send({ _id, name, email });
     } catch (err) {
-      return res.status(400).send("Invalid data given.");
+      console.error(err);
+      return res.status(500).send("An error occurred while logging in.");
     }
   },
 
@@ -84,6 +85,7 @@ const AuthController = {
       req.user = verified;
       next();
     } catch (err) {
+      console.error(err);
       return res.status(400).send("Invalid Token");
     }
   },

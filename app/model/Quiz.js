@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { date } = require("@hapi/joi");
 
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
@@ -59,7 +58,7 @@ const quizSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 
