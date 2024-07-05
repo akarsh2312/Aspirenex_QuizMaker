@@ -8,23 +8,11 @@ const QuizController = {
     const { title, description, type, questions } = req.body;
     const user_id = req.params.user_id;
 
-    // const quizSchema = Joi.object({
-    //   user_id: Joi.string().required(),
-    //   title: Joi.string().required(),
-    //   description: Joi.string(),
-    //   type: Joi.string().required(),
-    //   questions: Joi.array().required(),
-    // });
+
 
     try {
       // create Quiz
       const quiz = new Quiz({ user_id, title, description, type, questions });
-      // //   validating given data
-      // const { error } = quizSchema.validate(quiz);
-      // console.log(error);
-      // if (error)
-      //   return res.status(400).send("[validation error] Invalid data given.");
-      // return res.status(200).send("HU");
       const savedQuiz = await quiz.save();
 
       const quizzer = QuizzerController.incrementCuratedCount(user_id);

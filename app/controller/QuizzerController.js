@@ -11,16 +11,10 @@ const QuizzerController = {
       name: Joi.string().required(),
       email: Joi.string().email().required(),
     });
-    // console.log("User", { _id, name, email });
-    // console.log("Schema", quizzerSchema);
+
 
     try {
-      // validating given data
-      // const { error } = quizzerSchema.validate({ _id, name, email });
-      // if (error)
-      //   return res.status(400).send("[validation error] Invalid data given.");
 
-      // create Quizzer
       const quizzer = new Quizzer({
         _id: _id,
         name: name,
@@ -90,12 +84,6 @@ const QuizzerController = {
       quizzer.quizFlawless += flawless; // + 0 or 1
 
       const updatedQuizzer = await Quizzer.findByIdAndUpdate(user_id, quizzer);
-      // const result1 = await Quizzer.findByIdAndUpdate(user_id, {
-      //   $inc: { quizAttended: 1 },
-      // });
-      // const result2 = await Quizzer.findByIdAndUpdate(user_id, {
-      //   $inc: { quizFlawless: flawless },
-      // });
       return updatedQuizzer;
     } catch (err) {
       console.log("Error", err);
